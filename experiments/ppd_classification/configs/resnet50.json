@@ -1,0 +1,67 @@
+{
+  "config_version": 1,
+  "status": "partial_matched_inference_defense_results_available",
+  "task": "OPIXray crop classification robustness and defense evaluation",
+  "model": {
+    "architecture": "resnet50",
+    "checkpoint": "artifacts/checkpoints/ppd/resnet50_none.pt",
+    "checkpoint_role": "shared clean-trained backbone for inference-time defense comparison"
+  },
+  "data": {
+    "dataset": "OPIXray",
+    "cache_dir": "data/processed/cache",
+    "development_split": "val",
+    "development_samples": 200,
+    "seed": 0,
+    "final_split": "test",
+    "final_samples": "all"
+  },
+  "defenses": [
+    "none",
+    "jpeg75",
+    "blur1.0",
+    "bit3",
+    "ppd16",
+    "ppd16m",
+    "ppd32",
+    "ppd32m",
+    "ppd64",
+    "ppd64m"
+  ],
+  "attacks": {
+    "fgsm": {
+      "eps_255": [
+        2,
+        4,
+        8
+      ]
+    },
+    "pgd": {
+      "eps_255": [
+        2,
+        4,
+        8
+      ],
+      "steps": 30
+    },
+    "cw": {
+      "kappas": [
+        0,
+        10
+      ],
+      "steps": 100,
+      "samples": 100,
+      "epsilon_bound": null
+    }
+  },
+  "scenarios": [
+    "oblivious",
+    "adaptive"
+  ],
+  "notes": [
+    "Use --defense to apply each inference-time defense to this same checkpoint.",
+    "The checkpoint is trained with defense=none; this isolates inference-time preprocessing from defense-aware training.",
+    "For C&W, report kappa, steps, sample count and achieved perturbation norms; epsilon is not a hard constraint in this implementation.",
+    "Run the final test split only after selecting settings using validation."
+  ]
+}

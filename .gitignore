@@ -3,7 +3,12 @@ __pycache__/
 *.pyc
 .DS_Store
 
-data/
-checkpoints/*.pt
-results/
+data/processed/cache/
+data/processed/train_pixels.npy
+/artifacts/checkpoints/**/*.pt
+/assets/pretrained/*.pt
+/experiments/ppd_classification/figures/
+/experiments/yolov5_classification/metrics/
+/experiments/yolov5_classification/figures/
+/archives/colab/*.zip
 *.egg-info/

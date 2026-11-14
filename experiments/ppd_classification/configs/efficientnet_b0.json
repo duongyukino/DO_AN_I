@@ -1,0 +1,73 @@
+{
+  "config_version": 1,
+  "status": "checkpoint_available_ready_for_evaluation",
+  "task": "OPIXray crop classification robustness and defense evaluation",
+  "model": {
+    "architecture": "efficientnet_b0",
+    "checkpoint": "artifacts/checkpoints/ppd/efficientnet_b0_none.pt",
+    "checkpoint_role": "shared clean-trained backbone for inference-time defense comparison"
+  },
+  "training": {
+    "command": "python ppd_resnet.py train --arch efficientnet_b0 --defense none",
+    "pretrained": true,
+    "epochs": 8,
+    "batch_size": 32,
+    "seed": 0
+  },
+  "data": {
+    "dataset": "OPIXray",
+    "cache_dir": "data/processed/cache",
+    "development_split": "val",
+    "development_samples": 200,
+    "seed": 0,
+    "final_split": "test",
+    "final_samples": "all"
+  },
+  "defenses": [
+    "none",
+    "jpeg75",
+    "blur1.0",
+    "bit3",
+    "ppd16",
+    "ppd16m",
+    "ppd32",
+    "ppd32m",
+    "ppd64",
+    "ppd64m"
+  ],
+  "attacks": {
+    "fgsm": {
+      "eps_255": [
+        2,
+        4,
+        8
+      ]
+    },
+    "pgd": {
+      "eps_255": [
+        2,
+        4,
+        8
+      ],
+      "steps": 30
+    },
+    "cw": {
+      "kappas": [
+        0,
+        10
+      ],
+      "steps": 100,
+      "samples": 100,
+      "epsilon_bound": null
+    }
+  },
+  "scenarios": [
+    "oblivious",
+    "adaptive"
+  ],
+  "notes": [
+    "Train one clean checkpoint, then use --defense for the inference-time sweep.",
+    "C&W epsilon is not a hard constraint in this implementation; report achieved norms.",
+    "Run the final test split only after selecting settings using validation."
+  ]
+}
